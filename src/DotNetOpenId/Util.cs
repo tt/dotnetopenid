@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Net;
 using System.Reflection;
@@ -269,17 +270,29 @@ namespace DotNetOpenId {
 	/// Extension methods for deferred serialization of various object types to strings.
 	/// </summary>
 	public static class DeferredToStringTools {
-		/// <summary>		/// Prepares a dictionary for printing as a string.		/// </summary>		/// <remarks>		/// The work isn't done until (and if) the 		/// <see cref="Object.ToString"/> method is actually called, which makes it great		/// for logging complex objects without being in a conditional block.
+		/// <summary>
+		/// Prepares a dictionary for printing as a string.
+		/// </summary>
+		/// <remarks>
+		/// The work isn't done until (and if) the 
+		/// <see cref="Object.ToString"/> method is actually called, which makes it great
+		/// for logging complex objects without being in a conditional block.
 		/// </remarks>
-		public static object DeferredToString<K, V>(this IEnumerable<KeyValuePair<K, V>> keyValuePairs) {
-			return new CustomToString<IEnumerable<KeyValuePair<K, V>>>(keyValuePairs, pairs => {
-				var dictionary = pairs as IDictionary<K, V>;
-				StringBuilder sb = new StringBuilder(dictionary != null ? dictionary.Count * 40 : 200);
-				foreach (var pair in pairs) {
-					sb.AppendFormat("\t{0}: {1}{2}", pair.Key, pair.Value, Environment.NewLine);
-				}
-				return sb.ToString();
-			});
+		[SuppressMessage("Microsoft.Design", "CA1006:DoNotNestGenericTypesInMemberSignatures")]
+		public static object DeferredToString<TKey, TValue>(this IEnumerable<KeyValuePair<TKey, TValue>> keyValuePairs) {
+			return new CustomToString<IEnumerable<KeyValuePair<TKey, TValue>>>(keyValuePairs, dictionarySerializer);
+		}
+
+		// Add as many overloads of DeferredToString as you want to this class,
+		// one for each type of object you want to emit as part of logging.
+
+		private static string dictionarySerializer<TKey, TValue>(IEnumerable<KeyValuePair<TKey, TValue>> pairs) {
+			var dictionary = pairs as IDictionary<TKey, TValue>;
+			StringBuilder sb = new StringBuilder(dictionary != null ? dictionary.Count * 40 : 200);
+			foreach (var pair in pairs) {
+				sb.AppendFormat(CultureInfo.CurrentCulture, "\t{0}: {1}{2}", pair.Key, pair.Value, Environment.NewLine);
+			}
+			return sb.ToString();
 		}
 
 		/// <summary>
@@ -291,11 +304,11 @@ namespace DotNetOpenId {
 			Func<T, string> toString;
 
 			public CustomToString(T obj, Func<T, string> toString) {
-				if (toString == null) throw new ArgumentNullException();
+				if (toString == null) throw new ArgumentNullException("toString");
 				this.obj = obj;
 				this.toString = toString;
 			}
-	
+
 			public override string ToString() {
 				return toString(obj);
 			}
