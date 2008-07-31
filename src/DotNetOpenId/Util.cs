@@ -269,7 +269,7 @@ namespace DotNetOpenId {
 	/// <summary>
 	/// Extension methods for deferred serialization of various object types to strings.
 	/// </summary>
-	public static class DeferredToStringTools {
+	internal static class DeferredToStringTools {
 		/// <summary>
 		/// Prepares a dictionary for printing as a string.
 		/// </summary>
