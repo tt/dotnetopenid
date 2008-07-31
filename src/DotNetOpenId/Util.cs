@@ -285,6 +285,7 @@ namespace DotNetOpenId {
 		}
 
 		private class DelayedToString<T> {
+			public DelayedToString(T obj) : this(obj, null) { }
 			public DelayedToString(T obj, Func<T, string> toString) {
 				this.obj = obj;
 				this.toString = toString;
@@ -292,7 +293,11 @@ namespace DotNetOpenId {
 			T obj;
 			Func<T, string> toString;
 			public override string ToString() {
-				return toString(obj);
+				if (toString != null) {
+					return toString(obj);
+				} else {
+					return obj != null ? obj.ToString() : "<NULL>";
+				}
 			}
 		}
 	}
