@@ -145,7 +145,7 @@ namespace DotNetOpenId.RelyingParty {
 			if (query == null) throw new ArgumentNullException("query");
 			if (requestUrl == null) throw new ArgumentNullException("requestUrl");
 
-			Logger.DebugFormat("OpenID authentication response received:{0}{1}", Environment.NewLine, Util.ToString(query));
+			Logger.DebugFormat("OpenID authentication response received:{0}{1}", Environment.NewLine, query.DeferredToString());
 
 			ServiceEndpoint tokenEndpoint = null;
 			// The query parameter may be the POST query or the GET query,

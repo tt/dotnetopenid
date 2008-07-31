@@ -30,7 +30,7 @@ namespace DotNetOpenId {
 			if (query != null) Protocol = Protocol.Detect(query);
 
 			if (query != null) {
-				Logger.ErrorFormat("OpenIdException: {0}{1}{2}", message, Environment.NewLine, Util.ToString(query));
+				Logger.ErrorFormat("OpenIdException: {0}{1}{2}", message, Environment.NewLine, query.DeferredToString());
 			} else {
 				Logger.ErrorFormat("OpenIdException: {0}", message);
 			}

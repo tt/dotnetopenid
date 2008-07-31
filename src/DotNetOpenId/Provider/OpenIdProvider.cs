@@ -117,7 +117,7 @@ namespace DotNetOpenId.Provider {
 			Request req = Provider.Request.CreateRequest(this);
 
 			Logger.InfoFormat("Received OpenID {0} request.{1}{2}", req.Mode, Environment.NewLine,
-				Util.ToString(Query));
+				Query.DeferredToString());
 
 			return req;
 		}

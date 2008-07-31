@@ -11,7 +11,7 @@ namespace DotNetOpenId.RelyingParty {
 			EncodedFields = fields;
 
 			Logger.DebugFormat("Preparing indirect message:{0}{1}", Environment.NewLine,
-				Util.ToString(fields));
+				fields.DeferredToString());
 		}
 
 		#region IEncodable Members

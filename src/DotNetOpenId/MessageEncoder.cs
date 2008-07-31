@@ -48,7 +48,7 @@ namespace DotNetOpenId {
 			switch (encode_as) {
 				case EncodingType.DirectResponse:
 					Logger.DebugFormat("Sending direct message response:{0}{1}",
-						Environment.NewLine, Util.ToString(message.EncodedFields));
+						Environment.NewLine, message.EncodedFields.DeferredToString());
 					HttpStatusCode code = (message is Exception) ?
 						HttpStatusCode.BadRequest : HttpStatusCode.OK;
 					// Key-Value Encoding is how response bodies are sent.
@@ -60,7 +60,7 @@ namespace DotNetOpenId {
 					break;
 				case EncodingType.IndirectMessage:
 					Logger.DebugFormat("Sending indirect message response:{0}{1}",
-						Environment.NewLine, Util.ToString(message.EncodedFields));
+						Environment.NewLine, message.EncodedFields.DeferredToString());
 					// TODO: either redirect or do a form POST depending on payload size.
 					Debug.Assert(message.RedirectUrl != null);
 					if (getSizeOfPayload(message) <= GetToPostThreshold)

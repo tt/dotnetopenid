@@ -263,17 +263,16 @@ namespace DotNetOpenId {
 			}
 			return null;
 		}
+	}
 
-		/// <summary>
-		/// Prepares a dictionary for printing as a string.
-		/// </summary>
-		/// <remarks>
-		/// The work isn't done until (and if) the 
-		/// <see cref="Object.ToString"/> method is actually called, which makes it great
-		/// for logging complex objects without being in a conditional block.
+	/// <summary>
+	/// Extension methods for deferred serialization of various object types to strings.
+	/// </summary>
+	public static class DeferredToStringTools {
+		/// <summary>		/// Prepares a dictionary for printing as a string.		/// </summary>		/// <remarks>		/// The work isn't done until (and if) the 		/// <see cref="Object.ToString"/> method is actually called, which makes it great		/// for logging complex objects without being in a conditional block.
 		/// </remarks>
-		internal static object ToString<K, V>(IEnumerable<KeyValuePair<K, V>> pairs) {
-			return new DelayedToString<IEnumerable<KeyValuePair<K, V>>>(pairs, p => {
+		public static object DeferredToString<K, V>(this IEnumerable<KeyValuePair<K, V>> keyValuePairs) {
+			return new CustomToString<IEnumerable<KeyValuePair<K, V>>>(keyValuePairs, pairs => {
 				var dictionary = pairs as IDictionary<K, V>;
 				StringBuilder sb = new StringBuilder(dictionary != null ? dictionary.Count * 40 : 200);
 				foreach (var pair in pairs) {
@@ -283,20 +282,22 @@ namespace DotNetOpenId {
 			});
 		}
 
-		private class DelayedToString<T> {
-			public DelayedToString(T obj) : this(obj, null) { }
-			public DelayedToString(T obj, Func<T, string> toString) {
+		/// <summary>
+		/// Wraps an object in another object that has a special ToString() implementation.
+		/// </summary>
+		/// <typeparam name="T">The type of object to be wrapped.</typeparam>
+		private class CustomToString<T> {
+			T obj;
+			Func<T, string> toString;
+
+			public CustomToString(T obj, Func<T, string> toString) {
+				if (toString == null) throw new ArgumentNullException();
 				this.obj = obj;
 				this.toString = toString;
 			}
-			T obj;
-			Func<T, string> toString;
+	
 			public override string ToString() {
-				if (toString != null) {
-					return toString(obj);
-				} else {
-					return obj != null ? obj.ToString() : "<NULL>";
-				}
+				return toString(obj);
 			}
 		}
 	}
