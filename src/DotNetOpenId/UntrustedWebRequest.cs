@@ -142,7 +142,7 @@ namespace DotNetOpenId {
 			}
 
 			// Allow for whitelist or blacklist to override our detection.
-			DotNetOpenId.Util.Func<string, bool> failsUnlessWhitelisted = (string reason) => {
+			Func<string, bool> failsUnlessWhitelisted = (string reason) => {
 				if (isHostWhitelisted(uri.DnsSafeHost)) return true;
 				Logger.WarnFormat("Rejecting URL {0} because {1}.", uri, reason);
 				return false;

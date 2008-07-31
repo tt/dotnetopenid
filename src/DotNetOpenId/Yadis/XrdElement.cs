@@ -29,7 +29,7 @@ namespace DotNetOpenId.Yadis {
 			}
 		}
 
-		IEnumerable<ServiceElement> searchForServiceTypeUris(Util.Func<Protocol, string> p) {
+		IEnumerable<ServiceElement> searchForServiceTypeUris(Func<Protocol, string> p) {
 			var xpath = new StringBuilder();
 			xpath.Append("xrd:Service[");
 			foreach (var protocol in Protocol.AllVersions) {

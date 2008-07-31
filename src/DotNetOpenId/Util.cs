@@ -246,7 +246,6 @@ namespace DotNetOpenId {
 			return true;
 		}
 
-		internal delegate R Func<T, R>(T t);
 		/// <summary>
 		/// Scans a list for matches with some element of the OpenID protocol,
 		/// searching from newest to oldest protocol for the first and best match.
